@@ -1,6 +1,6 @@
 mod app;
 mod dice;
-mod turn_counter;
+mod game;
 
 fn main() {
     app::start();

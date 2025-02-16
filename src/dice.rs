@@ -1,6 +1,6 @@
 use bevy::{
     color::Color,
-    ecs::bundle::Bundle,
+    ecs::{bundle::Bundle, entity::Entity, system::Resource},
     prelude::{BuildChildren, ChildBuild, ChildBuilder, Text},
     text::{TextColor, TextFont},
     ui::{
@@ -9,6 +9,14 @@ use bevy::{
     },
     utils::default,
 };
+
+#[derive(Resource)]
+pub struct SelectedDice(pub Vec<Entity>);
+impl Default for SelectedDice {
+    fn default() -> Self {
+        Self(Vec::new())
+    }
+}
 
 #[derive(Bundle)]
 struct DiceButton {
@@ -31,18 +39,18 @@ impl DiceButton {
     }
 }
 
-pub fn create_buttons(p: &mut ChildBuilder) {
+pub fn create_dice_rows(p: &mut ChildBuilder) {
     for _ in 0..2 {
         p.spawn(Node {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             ..default()
         })
-        .with_children(create_button_row);
+        .with_children(create_dice_buttons);
     }
 }
 
-fn create_button_row(p: &mut ChildBuilder) {
+fn create_dice_buttons(p: &mut ChildBuilder) {
     for _ in 0..=2 {
         p.spawn((
             DiceButton::new(),
