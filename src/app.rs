@@ -1,20 +1,7 @@
 use bevy::{
-    app::{App, Startup, Update},
-    color::{
-        palettes::css::{BLACK, BLUE, RED, WHITE},
-        Color,
-    },
-    ecs::{entity::Entity, query::Without, system::Res},
-    prelude::{
-        in_state, AppExtStates, BuildChildren, Button, Camera2d, Children, Commands,
-        IntoSystemConfigs, NextState, Query, ResMut, Text, With,
-    },
-    state::state::State,
-    text::{TextColor, TextFont},
-    ui::{AlignItems, BorderColor, FlexDirection, Interaction, JustifyContent, Node, Val},
-    utils::default,
+    color::palettes::css::{BLACK, BLUE, RED, WHITE},
+    prelude::*,
     winit::WinitSettings,
-    DefaultPlugins,
 };
 use rand::Rng;
 
@@ -22,6 +9,11 @@ use crate::{
     dice::{create_dice_rows, SelectedDice},
     game::{create_option_row, GameState, OptionUI, Status, StatusUI, END, ROLL},
 };
+
+/// Option button query params
+type OBQuery = (With<Button>, With<OptionUI>);
+/// Dice button query params
+type DBQuery = (With<Button>, Without<OptionUI>);
 
 pub fn start() {
     App::new()
@@ -73,7 +65,7 @@ fn setup(mut commands: Commands) {
 pub fn roll(
     selected_dice: Res<SelectedDice>,
     mut new_state: ResMut<NextState<GameState>>,
-    mut button_query: Query<(&Children, Entity), (With<Button>, Without<OptionUI>)>,
+    mut button_query: Query<(&Children, Entity), DBQuery>,
     mut text_query: Query<&mut Text>,
 ) {
     for (c, e) in &mut button_query {
@@ -88,10 +80,7 @@ pub fn roll(
 pub fn dice_buttons(
     state: Res<State<GameState>>,
     mut selected_dice: ResMut<SelectedDice>,
-    mut button_query: Query<
-        (&Interaction, &mut BorderColor, Entity),
-        (With<Button>, Without<OptionUI>),
-    >,
+    mut button_query: Query<(&Interaction, &mut BorderColor, Entity), DBQuery>,
 ) {
     if state.get() == &GameState::Farkle {
         for (_, mut b, _) in &mut button_query {
@@ -130,7 +119,7 @@ pub fn dice_buttons(
 pub fn check_system(
     selected_dice: Res<SelectedDice>,
     mut new_state: ResMut<NextState<GameState>>,
-    mut button_query: Query<(Entity, &Children), (With<Button>, Without<OptionUI>)>,
+    mut button_query: Query<(Entity, &Children), DBQuery>,
     text_query: Query<&mut Text>,
 ) {
     let mut dice = Vec::new();
@@ -147,17 +136,15 @@ pub fn check_system(
     }
 }
 
-fn scoring(dice: &Vec<u8>) -> bool {
+fn scoring(dice: &[u8]) -> bool {
     if dice.contains(&1) {
         return true;
     }
     if dice.contains(&5) {
         return true;
     }
-    if dice.len() >= 3 {
-        if dice[0] == dice[1] && dice[0] == dice[2] {
-            return true;
-        }
+    if dice.len() >= 3 && dice[0] == dice[1] && dice[0] == dice[2] {
+        return true;
     }
     false
 }
@@ -166,10 +153,7 @@ pub fn farkle_system(
     mut status: ResMut<Status>,
     mut selected_dice: ResMut<SelectedDice>,
     mut new_state: ResMut<NextState<GameState>>,
-    mut button_query: Query<
-        (&Interaction, &mut BorderColor, &Children),
-        (With<Button>, With<OptionUI>),
-    >,
+    mut button_query: Query<(&Interaction, &mut BorderColor, &Children), OBQuery>,
     text_query: Query<&mut Text>,
 ) {
     // RESET PLAYER SCORE
@@ -205,10 +189,7 @@ pub fn farkle_system(
 pub fn option_buttons(
     mut new_state: ResMut<NextState<GameState>>,
     mut status: ResMut<Status>,
-    mut button_query: Query<
-        (&Interaction, &mut BorderColor, &Children),
-        (With<Button>, With<OptionUI>),
-    >,
+    mut button_query: Query<(&Interaction, &mut BorderColor, &Children), OBQuery>,
     text_query: Query<&mut Text>,
 ) {
     for (i, mut b, c) in &mut button_query {

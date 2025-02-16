@@ -1,15 +1,4 @@
-use bevy::{
-    color::Color,
-    ecs::{bundle::Bundle, component::Component},
-    hierarchy::{BuildChildren, ChildBuild, ChildBuilder},
-    prelude::{Resource, States},
-    text::{TextColor, TextFont},
-    ui::{
-        widget::{Button, Text},
-        AlignItems, BackgroundColor, BorderColor, BorderRadius, JustifyContent, Node, UiRect, Val,
-    },
-    utils::default,
-};
+use bevy::prelude::*;
 
 #[derive(States, Default, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum GameState {
@@ -63,9 +52,9 @@ pub fn create_option_row(p: &mut ChildBuilder) {
     .with_children(create_option_buttons);
 }
 
-pub const PLAY: &'static str = "play";
-pub const ROLL: &'static str = "roll";
-pub const END: &'static str = "end";
+pub const PLAY: &str = "play";
+pub const ROLL: &str = "roll";
+pub const END: &str = "end";
 fn create_option_buttons(p: &mut ChildBuilder) {
     for i in [PLAY, ROLL, END] {
         p.spawn((

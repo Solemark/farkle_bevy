@@ -1,22 +1,7 @@
-use bevy::{
-    color::Color,
-    ecs::{bundle::Bundle, entity::Entity, system::Resource},
-    prelude::{BuildChildren, ChildBuild, ChildBuilder, Text},
-    text::{TextColor, TextFont},
-    ui::{
-        widget::Button, AlignItems, BackgroundColor, BorderColor, BorderRadius, JustifyContent,
-        Node, UiRect, Val,
-    },
-    utils::default,
-};
+use bevy::prelude::*;
 
-#[derive(Resource)]
+#[derive(Resource, Default)]
 pub struct SelectedDice(pub Vec<Entity>);
-impl Default for SelectedDice {
-    fn default() -> Self {
-        Self(Vec::new())
-    }
-}
 
 #[derive(Bundle)]
 struct DiceButton {
