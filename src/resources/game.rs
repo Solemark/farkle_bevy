@@ -21,6 +21,16 @@ impl Default for Status {
 }
 
 #[derive(Component)]
+pub struct ScoreUI;
+#[derive(Resource)]
+pub struct Score(pub usize);
+impl Default for Score {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+
+#[derive(Component)]
 pub struct OptionUI;
 #[derive(Bundle)]
 struct OptionButton {

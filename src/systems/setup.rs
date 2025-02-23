@@ -1,6 +1,6 @@
 use crate::resources::{
     dice::{create_dice_rows, SelectedDice},
-    game::{create_option_row, Status, StatusUI},
+    game::{create_option_row, Score, ScoreUI, Status, StatusUI},
 };
 use bevy::prelude::*;
 
@@ -8,6 +8,7 @@ pub fn setup(mut commands: Commands) {
     commands.spawn(Camera2d);
     commands.init_resource::<Status>();
     commands.init_resource::<SelectedDice>();
+    commands.init_resource::<Score>();
     commands
         .spawn(Node {
             width: Val::Percent(100.0),
@@ -22,6 +23,15 @@ pub fn setup(mut commands: Commands) {
         .with_child((
             StatusUI,
             Text::new("status message"),
+            TextFont {
+                font_size: 33.0,
+                ..default()
+            },
+            TextColor(Color::srgb(0.9, 0.9, 0.9)),
+        ))
+        .with_child((
+            ScoreUI,
+            Text::new("0/10000"),
             TextFont {
                 font_size: 33.0,
                 ..default()

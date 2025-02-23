@@ -16,7 +16,7 @@ pub fn check_system(
         }
     }
     if !scoring(&dice) {
-        new_state.set(GameState::Farkle)
+        new_state.set(GameState::Farkle);
     } else {
         new_state.set(GameState::Play);
     }
