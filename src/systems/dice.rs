@@ -21,6 +21,8 @@ pub fn dice_buttons(
                         selected_dice.0.push(e);
                     } else {
                         b.0 = RED.into();
+                        let i = selected_dice.0.iter().position(|i| i == &e).unwrap();
+                        selected_dice.0.remove(i);
                     }
                 }
                 Interaction::Hovered => {
