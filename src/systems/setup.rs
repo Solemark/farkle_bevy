@@ -19,16 +19,6 @@ pub fn setup(mut commands: Commands) {
             ..default()
         })
         .with_children(create_dice_rows)
-        .with_children(create_option_row)
-        .with_child((
-            StatusUI,
-            Text::new("status message"),
-            TextFont {
-                font_size: 33.0,
-                ..default()
-            },
-            TextColor(Color::srgb(0.9, 0.9, 0.9)),
-        ))
         .with_child((
             ScoreUI,
             Text::new("0/10000"),
@@ -38,4 +28,23 @@ pub fn setup(mut commands: Commands) {
             },
             TextColor(Color::srgb(0.9, 0.9, 0.9)),
         ));
+    commands
+        .spawn(Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::End,
+            flex_direction: FlexDirection::Column,
+            ..default()
+        })
+        .with_child((
+            StatusUI,
+            Text::new("status message"),
+            TextFont {
+                font_size: 33.0,
+                ..default()
+            },
+            TextColor(Color::srgb(0.9, 0.9, 0.9)),
+        ))
+        .with_children(create_option_row);
 }

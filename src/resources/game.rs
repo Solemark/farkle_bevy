@@ -62,11 +62,10 @@ pub fn create_option_row(p: &mut ChildBuilder) {
     .with_children(create_option_buttons);
 }
 
-pub const PLAY: &str = "play";
 pub const ROLL: &str = "roll";
 pub const END: &str = "end";
 fn create_option_buttons(p: &mut ChildBuilder) {
-    for i in [PLAY, ROLL, END] {
+    for i in [ROLL, END] {
         p.spawn((
             OptionUI,
             OptionButton::new(),
