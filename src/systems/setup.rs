@@ -8,16 +8,7 @@ use bevy::{
 };
 use rand::Rng;
 
-const POS: [(f32, f32); 6] = [
-    // top row
-    (-60.0, 0.0),
-    (50.0, 0.0),
-    (160.0, 0.0),
-    // bot row
-    (-60.0, -110.0),
-    (50.0, -110.0),
-    (160.0, -110.0),
-];
+const POS: [f32; 6] = [-220.0, -110.0, 0.0, 110.0, 220.0, 330.0];
 
 pub fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.spawn(Camera2d);
@@ -30,10 +21,9 @@ pub fn setup(mut commands: Commands, server: Res<AssetServer>) {
 /// Roll and create starting dice
 fn create_dice(commands: &mut Commands, server: Res<AssetServer>) {
     for i in 0..=5 {
-        let p = POS[i];
         commands
             .spawn((
-                Transform::from_xyz(p.0, p.1, 0.0),
+                Transform::from_xyz(POS[i], -110.0, 0.0),
                 Sprite {
                     image: server.load(format!("d6_{}.png", rand::rng().random_range(1..=6))),
                     custom_size: Some(Vec2::new(100.0, 100.0)),
@@ -51,12 +41,8 @@ fn create_dice(commands: &mut Commands, server: Res<AssetServer>) {
 fn create_buttons(commands: &mut Commands) {
     commands
         .spawn(Node {
-            min_width: Val::Px(500.0),
-            width: Val::Percent(30.0),
-            max_width: Val::Px(1000.0),
-            min_height: Val::Px(500.0),
+            width: Val::Percent(15.0),
             height: Val::Percent(100.0),
-            max_height: Val::Px(1000.0),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Start,
             flex_direction: FlexDirection::Column,
@@ -69,12 +55,12 @@ fn create_buttons(commands: &mut Commands) {
             ..default()
         })
         .with_children(|p| {
-            for i in ["roll", "end"] {
+            for i in ["ROLL", "END"] {
                 p.spawn((
                     Button,
                     Node {
                         width: Val::Percent(50.0),
-                        height: Val::Percent(10.0),
+                        height: Val::Percent(5.0),
                         margin: UiRect::all(Val::Percent(1.0)),
                         border: UiRect::all(Val::Percent(1.5)),
                         justify_content: JustifyContent::Center,
@@ -176,7 +162,7 @@ fn button_click(
     let (c, mut b) = query.get_mut(trigger.entity()).unwrap();
     b.0 = BLUE.into();
     let t = text.get(c[0]).unwrap();
-    if t.0 == "roll" {
+    if t.0 == "ROLL" {
         new_state.set(GameState::Roll);
     }
 }
