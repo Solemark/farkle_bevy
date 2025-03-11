@@ -17,7 +17,6 @@ pub fn farkle_system(
     mut button_query: Query<(&Interaction, &mut BorderColor, &Children), With<Button>>,
     text_query: Query<&Text>,
 ) {
-    //TODO - Logic for Farkle
     for (i, mut border, child) in &mut button_query {
         let text = text_query.get(child[0]).unwrap();
         match *i {
