@@ -154,7 +154,7 @@ fn button_none(trigger: Trigger<Pointer<Out>>, mut query: Query<&mut BorderColor
 
 fn button_click(
     trigger: Trigger<Pointer<Down>>,
-    mut new_state: ResMut<NextState<GameState>>,
+    mut state: ResMut<NextState<GameState>>,
     mut query: Query<(&Children, &mut BorderColor), With<Button>>,
     text: Query<&Text>,
 ) {
@@ -162,7 +162,7 @@ fn button_click(
     b.0 = BLUE.into();
     let t = text.get(c[0]).unwrap();
     if t.0 == "ROLL" {
-        new_state.set(GameState::Roll);
+        state.set(GameState::Roll);
     }
 }
 

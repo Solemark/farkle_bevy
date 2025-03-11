@@ -1,12 +1,23 @@
 use crate::resources::{
     dice::{Dice, Selected},
-    game::{Score, ScoreUI},
+    game::{GameState, Score, ScoreUI},
 };
 use bevy::{prelude::*, utils::hashbrown::HashMap};
 
 pub fn display_score_system(score: Res<Score>, mut query: Query<&mut Text, With<ScoreUI>>) {
     let mut text = query.single_mut();
     text.0 = format!("{}/{}", score.0, score.1);
+}
+
+pub fn farkle_system(
+    mut score: ResMut<Score>,
+    mut selected: ResMut<Selected>,
+    mut state: ResMut<NextState<GameState>>,
+) {
+    score.0 = 0;
+    score.1 = 0;
+    selected.0 = Vec::new();
+    state.set(GameState::Play)
 }
 
 pub fn scoring_system(selected: Res<Selected>, dice: Res<Dice>, mut score: ResMut<Score>) {

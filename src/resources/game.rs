@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 #[derive(States, Default, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum GameState {
+    Check,
+    Farkle,
     #[default]
     Play,
     Roll,
