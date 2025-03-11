@@ -1,6 +1,6 @@
 use crate::resources::{
     dice::{Dice, Selected},
-    game::GameState,
+    game::{GameState, Score, ScoreUI},
 };
 use bevy::{
     color::palettes::css::{BLACK, BLUE, GREY, WHITE},
@@ -14,6 +14,7 @@ pub fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.spawn(Camera2d);
     commands.init_resource::<Selected>();
     commands.init_resource::<Dice>();
+    commands.init_resource::<Score>();
     create_dice(&mut commands, server);
     create_buttons(&mut commands);
 }
@@ -23,7 +24,7 @@ fn create_dice(commands: &mut Commands, server: Res<AssetServer>) {
     for i in 0..=5 {
         commands
             .spawn((
-                Transform::from_xyz(POS[i], -110.0, 0.0),
+                Transform::from_xyz(POS[i], -200.0, 0.0),
                 Sprite {
                     image: server.load(format!("d6_{}.png", rand::rng().random_range(1..=6))),
                     custom_size: Some(Vec2::new(100.0, 100.0)),
@@ -54,13 +55,22 @@ fn create_buttons(commands: &mut Commands) {
             },
             ..default()
         })
+        .with_child((
+            ScoreUI,
+            Text::new("0/10000"),
+            TextFont {
+                font_size: 30.0,
+                ..default()
+            },
+            TextColor(WHITE.into()),
+        ))
         .with_children(|p| {
             for i in ["ROLL", "END"] {
                 p.spawn((
                     Button,
                     Node {
                         width: Val::Percent(50.0),
-                        height: Val::Percent(5.0),
+                        height: Val::Percent(7.5),
                         margin: UiRect::all(Val::Percent(1.0)),
                         border: UiRect::all(Val::Percent(1.5)),
                         justify_content: JustifyContent::Center,
@@ -109,15 +119,11 @@ fn dice_created(trigger: Trigger<OnAdd>, mut dice: ResMut<Dice>, query: Query<&S
         None => (false, 0),
     };
     if f {
-        // If entity is saved but dice has changed
         if dice.0[i].1 != d {
             dice.0[i] = (e, d);
-            println!("{:?}", dice.0);
         }
     } else {
-        // If entity is not saved, add it
         dice.0.push((e, d));
-        println!("{:?}", dice.0);
     }
 }
 
@@ -127,18 +133,11 @@ fn dice_none(trigger: Trigger<Pointer<Out>>, mut query: Query<&mut Sprite>) {
     sprite.custom_size = Some(Vec2::new(100.0, 100.0));
 }
 
-fn dice_click(
-    trigger: Trigger<Pointer<Click>>,
-    mut selected: ResMut<Selected>,
-    mut query: Query<&mut Sprite>,
-) {
-    let mut sprite = query.get_mut(trigger.entity()).unwrap();
+fn dice_click(trigger: Trigger<Pointer<Click>>, mut selected: ResMut<Selected>) {
     if !selected.0.contains(&trigger.entity()) {
         selected.0.push(trigger.entity());
-        sprite.color = BLUE.into();
     } else {
         selected.0.retain(|i| i != &trigger.entity());
-        sprite.color = GREY.into();
     }
 }
 

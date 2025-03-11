@@ -4,7 +4,11 @@ mod systems;
 use crate::systems::setup::setup;
 use bevy::{prelude::*, winit::WinitSettings};
 use resources::game::GameState;
-use systems::{dice_system::selected_dice_system, option_system::roll_system};
+use systems::{
+    dice_system::selected_dice_system,
+    option_system::roll_system,
+    score_system::{display_score_system, scoring_system},
+};
 
 fn main() {
     App::new()
@@ -16,6 +20,8 @@ fn main() {
             Update,
             (
                 selected_dice_system,
+                display_score_system,
+                scoring_system,
                 roll_system.run_if(in_state(GameState::Roll)),
             ),
         )
