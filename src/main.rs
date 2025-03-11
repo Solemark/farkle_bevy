@@ -2,7 +2,7 @@ mod resources;
 mod systems;
 
 use crate::systems::setup::setup;
-use bevy::{prelude::*, winit::WinitSettings};
+use bevy::prelude::*;
 use resources::game::GameState;
 use systems::{
     check_system::check_system,
@@ -14,7 +14,6 @@ use systems::{
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .insert_resource(WinitSettings::desktop_app())
         .insert_state(GameState::Play)
         .add_systems(Startup, setup)
         .add_systems(
