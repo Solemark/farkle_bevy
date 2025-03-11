@@ -17,7 +17,7 @@ pub fn farkle_system(
     score.0 = 0;
     score.1 = 0;
     selected.0 = Vec::new();
-    state.set(GameState::Play)
+    state.set(GameState::End)
 }
 
 pub fn scoring_system(selected: Res<Selected>, dice: Res<Dice>, mut score: ResMut<Score>) {
