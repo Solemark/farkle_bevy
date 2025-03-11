@@ -7,7 +7,7 @@ use resources::game::GameState;
 use systems::{
     check_system::check_system,
     dice_system::selected_dice_system,
-    option_system::{end_system, roll_system},
+    option_system::roll_system,
     score_system::{display_score_system, farkle_system, scoring_system},
 };
 
@@ -25,7 +25,6 @@ fn main() {
                 roll_system.run_if(in_state(GameState::Roll)),
                 check_system.run_if(in_state(GameState::Check)),
                 farkle_system.run_if(in_state(GameState::Farkle)),
-                end_system.run_if(in_state(GameState::End)),
             ),
         )
         .run();

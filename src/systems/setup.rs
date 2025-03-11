@@ -154,6 +154,8 @@ fn button_none(trigger: Trigger<Pointer<Out>>, mut query: Query<&mut BorderColor
 
 fn button_click(
     trigger: Trigger<Pointer<Down>>,
+    mut score: ResMut<Score>,
+    mut selected: ResMut<Selected>,
     current: Res<State<GameState>>,
     mut state: ResMut<NextState<GameState>>,
     mut query: Query<(&Children, &mut BorderColor), With<Button>>,
@@ -162,12 +164,19 @@ fn button_click(
     let (c, mut b) = query.get_mut(trigger.entity()).unwrap();
     b.0 = BLUE.into();
     let t = text.get(c[0]).unwrap();
-    if t.0 == "ROLL" && *current.get() != GameState::End {
+    if roll_check(&t.0, current) {
         state.set(GameState::Roll);
     }
     if t.0 == "END" {
+        score.0 = 0;
+        score.1 = 0;
+        selected.0 = Vec::new();
         state.set(GameState::Roll);
     }
+}
+
+fn roll_check(t: &String, c: Res<State<GameState>>) -> bool {
+    t == "ROLL" && *c.get() != GameState::End && *c.get() != GameState::Farkle
 }
 
 fn button_release(trigger: Trigger<Pointer<Up>>, mut query: Query<&mut BorderColor, With<Button>>) {
@@ -177,5 +186,6 @@ fn button_release(trigger: Trigger<Pointer<Up>>, mut query: Query<&mut BorderCol
 
 fn button_hover(trigger: Trigger<Pointer<Over>>, mut query: Query<&mut BorderColor, With<Button>>) {
     let mut border = query.get_mut(trigger.entity()).unwrap();
+
     border.0 = WHITE.into();
 }

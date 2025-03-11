@@ -1,8 +1,12 @@
 use crate::resources::{
     dice::{Dice, Selected},
-    game::{GameState, Score, ScoreUI},
+    game::{Score, ScoreUI},
 };
-use bevy::{prelude::*, utils::hashbrown::HashMap};
+use bevy::{
+    color::palettes::css::{BLACK, BLUE, RED, WHITE},
+    prelude::*,
+    utils::hashbrown::HashMap,
+};
 
 pub fn display_score_system(score: Res<Score>, mut query: Query<&mut Text, With<ScoreUI>>) {
     let mut text = query.single_mut();
@@ -10,14 +14,36 @@ pub fn display_score_system(score: Res<Score>, mut query: Query<&mut Text, With<
 }
 
 pub fn farkle_system(
-    mut score: ResMut<Score>,
-    mut selected: ResMut<Selected>,
-    mut state: ResMut<NextState<GameState>>,
+    mut button_query: Query<(&Interaction, &mut BorderColor, &Children), With<Button>>,
+    text_query: Query<&Text>,
 ) {
-    score.0 = 0;
-    score.1 = 0;
-    selected.0 = Vec::new();
-    state.set(GameState::End)
+    //TODO - Logic for Farkle
+    for (i, mut border, child) in &mut button_query {
+        let text = text_query.get(child[0]).unwrap();
+        match *i {
+            Interaction::Pressed => {
+                if text.0 == "END" {
+                    border.0 = BLACK.into();
+                } else {
+                    border.0 = RED.into();
+                }
+            }
+            Interaction::Hovered => {
+                if text.0 == "END" {
+                    border.0 = WHITE.into();
+                } else {
+                    border.0 = RED.into();
+                }
+            }
+            Interaction::None => {
+                if text.0 == "END" {
+                    border.0 = BLUE.into();
+                } else {
+                    border.0 = RED.into();
+                }
+            }
+        }
+    }
 }
 
 pub fn scoring_system(selected: Res<Selected>, dice: Res<Dice>, mut score: ResMut<Score>) {

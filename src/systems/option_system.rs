@@ -15,7 +15,3 @@ pub fn roll_system(
     }
     state.set(GameState::Check);
 }
-
-pub fn end_system() {
-    // Paint the "END" button Blue and every other button Red
-}
